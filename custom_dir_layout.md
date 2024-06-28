@@ -1,10 +1,10 @@
 # User Directory Layout
 
-Working on the HPC, many bioinformaticians face the problem of hard `$HOME` directory space limit. Commonly users have primary directory (something like `/hpc/home/user_name`) and an additional group-specific directory with more available space (something like `/hpc/group_name/user_name`).
+Working on the HPC, many bioinformaticians face the problem of hard `$HOME` directory space limit. Usually users have primary directory (something like `/home/research/user_name`) and an additional group-specific directory with more available space (something like `/hpc/group_name/user_name`).
 
-Prgrams like RStudio and Apptainer (Singularity) quickly fill up the `$HOME` directory under the default settings with notebooks and container cache. Conda environments, R libraries and user-specific programs do the same. To overcome this issue I suggest to move all user-specific binaries, program data, configs, etc. to the secondary directory (usually user's subdirectory in their scientific group) and instruct the programs to use them.
+Programs like RStudio and Apptainer (Singularity) quickly fill up the `$HOME` directory under the default settings with notebooks and container cache. Conda environments, R libraries and user-specific programs do the same. User-specific binaries are binaries for which you are the only user. They can be for example your personal installation of conda. Usually they are installed in `$HOME/bin` or `$HOME/.local/bin` directory. To overcome this issue I suggest to move all user-specific binaries, program data, configs, etc. to the secondary directory (usually user's subdirectory in their scientific group) and instruct the programs to use them.
 
-This is where XDG base directory specification comes to help. It is arecently developed standard layout used for user-specific files. Many programs already use XDG so that migration should not be a total headache.
+This is where XDG base directory specification comes to help. It is a standard for directory layout used for user-specific files. Many programs already use XDG so that migration should not be a total headache.
 
 # XDG Base Directory Specification
 You can find more details on [this page](https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html). In short:
@@ -71,7 +71,7 @@ export R_USER_CONFIG_DIR=$XDG_CONFIG_HOME
 export R_USER_CACHE_DIR=$XDG_CACHE_HOME
 ```
 
-Do not forget to install R to `/hpc/$GROUP_NAME/$USER/.local/bin`:
+Do not forget to install R to `/hpc/$GROUP_NAME/$USER/.local/bin`. You don't need to do that if your R installation comes from conda/mamba/pixi or other package manager.
 
 ```bash
 export R_VERSION=4.4.1
@@ -92,7 +92,7 @@ make && make install
 
 I recommend installing conda and mamba using [miniforge installer](https://github.com/conda-forge/miniforge). It is interactive and you can specify installation path to `/hpc/$GROUP_NAME/$USER/.local/bin`.
 
-Run the following command to create `.condarc` file and use mamba with conda calls:
+Run the following command to create `.condarc` file and use mamba with all conda calls:
 
 ```bash
 conda config --set solver libmamba
@@ -115,9 +115,9 @@ IPython used to support XDG based directory specification, but then _returned to
 export IPYTHONDIR=${XDG_CONFIG_HOME}/ipython
 ```
 
-Matplotlib is a heavy library with many configuration options. By default is repsects XDG specification, but if `MPLCONFIGDIR` is set it will put both configuration and cache files in that directory.
+Matplotlib is a heavy library with many configuration options. By default is respects XDG specification, but if `MPLCONFIGDIR` is set it will put both configuration and cache files in that directory. Do not set this environment variable.
 
-Pip respects `XDG_CACHE_HOME`.
+Pip respects `XDG_CACHE_HOME`. You don't need to do anything.
 
 ## Singularity/Apptainer
 
