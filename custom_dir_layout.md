@@ -97,7 +97,9 @@ Run the following command to create `.condarc` file and use mamba with all conda
 ```bash
 conda config --set solver libmamba
 ```
-This file seems to be created in the `$HOME` directory by default. Simply move it to the `$XDG_CONFIG_HOME` as conda is configured to look in the XDG directories as well.
+This file seems to be created in the `$HOME` directory by default. Simply move it to the `$XDG_CONFIG_HOME` as conda is configured to look at `$XDG_CONFIG_HOME/conda/.condarc`.
+
+Unfortunately, conda also creates a `~/.conda` directory with `environments.txt` file, which is currently hardcoded in conda and [it is not possible to move](https://github.com/conda/conda/issues/8804). You can leave it there or use [a patched version of conda](https://github.com/libranet/conda-xdgpatch) (not recommended).
 
 ## Jupyter, IPython and other python-specific
 
