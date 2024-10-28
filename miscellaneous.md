@@ -73,6 +73,10 @@ Untar uncompressed tarball
 ```
 tar -xf filename.tar
 ```
+Diff for two json files:
+```
+diff <(jq --sort-keys . A.json) <(jq --sort-keys . B.json)
+```
 
 ## SSH
 Create a tunnel in master mode for [easy control over connection](https://stackoverflow.com/questions/67494107/how-do-i-properly-open-a-ssh-tunnel-in-the-background):
