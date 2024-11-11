@@ -85,6 +85,12 @@ ssh -M -S ~/vscode-tunnel -o "ExitOnForwardFailure yes" -fN hpc -L 9090:n0122:90
 ssh -S ~/vscode-tunnel -O exit hpc
 ```
 
+## Git
+Pretty-print json before comparing it [to the committed version in git](https://gist.github.com/Ricket/78bcd681db86bcbb134558428c4c6cb4):
+echo "*.json diff=json" >> ~/.gitattributes
+git config --global core.attributesfile ~/.gitattributes
+git config --global diff.json.textconv "jq '.' \$1"
+
 ## Conda config
 Always use libmamba with conda calls.
 ```
