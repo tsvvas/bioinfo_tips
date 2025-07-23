@@ -53,7 +53,7 @@ echo "CPUs allocated: $SLURM_CPUS_ON_NODE"
 [[ -d "$XDG_STATE_HOME"/rstudio-server ]] || mkdir -p "$XDG_STATE_HOME"/rstudio-server
 [[ -d "$XDG_CACHE_HOME"/.jovyan ]] || mkdir -p "$XDG_CACHE_HOME"/.jovyan
 
-RLIBCUSTOM="$XDG_CACHE_HOME/R/%p-library/%v"
+RLIBCUSTOM="$XDG_DATA_HOME/R/%p-library/%v"
 
 singularity run \
     --app rserver \
@@ -63,6 +63,7 @@ singularity run \
     --bind "$TMPDIR":/tmp \
     --bind "$XDG_CACHE_HOME"/.jovyan:/home/jovyan \
     --env R_LIBS_USER=$RLIBCUSTOM \
+    --env R_USER="$PROJECTDIR" \
     "$CONTAINER_PATH" \
     --www-port 8989 \
     --www-address 0.0.0.0 \

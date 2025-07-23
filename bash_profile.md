@@ -14,8 +14,6 @@ export XDG_BIN_HOME="$PROJECTDIR/.local/bin"
 
 ## Aliases
 ```
-alias .="cd .."
-
 # Quick access to project directory
 alias gtwd="cd $PROJECTDIR"
 
