@@ -63,11 +63,10 @@ workdir=$(mktemp -d)
 cat > "${workdir}"/rsession.sh <<"END"
 #!/bin/sh
 export R_LIBS_USER="${XDG_DATA_HOME}/R/rocker-rstudio/"
+export RSTUDIO_WHICH_R="${RSTUDIO_WHICH_R:-/usr/local/bin/R}"
 ## custom Rprofile & Renviron (default is $HOME/.Rprofile and $HOME/.Renviron)
 # export R_PROFILE_USER=/path/to/Rprofile
 # export R_ENVIRON_USER=/path/to/Renviron
-export RSESSION_LOG_FILE="${SLURM_SUBMIT_DIR}/rsession.log"
-exec &>>"\${RSESSION_LOG_FILE}"
 # Launch the original command
 echo "Launching rsession..."
 exec /usr/lib/rstudio-server/bin/rsession "${@}"
@@ -76,7 +75,6 @@ END
 chmod +x "${workdir}"/rsession.sh
 
 cat > "${workdir}"/rsession.conf << END
-rsession-which-r=/usr/local/bin/R
 session-default-working-dir=$PROJECTDIR
 session-default-new-project-dir=$PROJECTDIR/projects
 END
@@ -93,11 +91,11 @@ export APPTAINERENV_XDG_DATA_HOME=$XDG_DATA_HOME
 export APPTAINERENV_XDG_CONFIG_HOME=$XDG_CONFIG_HOME
 export APPTAINERENV_XDG_STATE_HOME=$XDG_STATE_HOME
 export APPTAINERENV_XDG_CACHE_HOME=$XDG_CACHE_HOME
+export APPTAINER_RSTUDIO_WHICH_R=$RSTUDIO_WHICH_R
 
 singularity run \
     --app rserver \
     --bind "$PROJECTDIR",/scratch \
-    --bind "$XDG_CACHE_HOME"/.jovyan:/home/jovyan \
     --bind "$XDG_CACHE_HOME"/rstudio-server:/var/lib/rstudio-server \
     --bind "$XDG_STATE_HOME"/rstudio-server:/var/run/rstudio-server \
     --bind "$XDG_CACHE_HOME"/rstudio-server/log:/var/log/rstudio/rstudio-server \
@@ -111,4 +109,4 @@ singularity run \
     --server-user "$USER" \
     --rsession-path="/etc/rstudio/rsession.sh" \
     --auth-none 1 \
-    --auth-minimum-user-id 0 \
+    --auth-minimum-user-id 0 
