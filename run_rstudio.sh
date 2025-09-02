@@ -52,7 +52,6 @@ echo "CPUs allocated: $SLURM_CPUS_ON_NODE"
 
 [[ -d "$XDG_CACHE_HOME/rstudio-server" ]] || mkdir -p "$XDG_CACHE_HOME/rstudio-server"
 [[ -d "$XDG_CACHE_HOME/rstudio-server/log" ]] || mkdir -p "$XDG_CACHE_HOME/rstudio-server/log"
-[[ -d "$XDG_CACHE_HOME/rstudio-server/run" ]] || mkdir -p "$XDG_CACHE_HOME/rstudio-server/run"
 [[ -d "$XDG_STATE_HOME/rstudio-server" ]] || mkdir -p "$XDG_STATE_HOME/rstudio-server"
 [[ -d "$XDG_CACHE_HOME/.jovyan" ]] || mkdir -p "$XDG_CACHE_HOME/.jovyan"
 
@@ -77,6 +76,7 @@ END
 chmod +x "${workdir}"/rsession.sh
 
 cat > "${workdir}"/rsession.conf << END
+rsession-which-r=/usr/local/bin/R
 session-default-working-dir=$PROJECTDIR
 session-default-new-project-dir=$PROJECTDIR/projects
 END
@@ -97,6 +97,7 @@ export APPTAINERENV_XDG_CACHE_HOME=$XDG_CACHE_HOME
 singularity run \
     --app rserver \
     --bind "$PROJECTDIR",/scratch \
+    --bind "$XDG_CACHE_HOME"/.jovyan:/home/jovyan \
     --bind "$XDG_CACHE_HOME"/rstudio-server:/var/lib/rstudio-server \
     --bind "$XDG_STATE_HOME"/rstudio-server:/var/run/rstudio-server \
     --bind "$XDG_CACHE_HOME"/rstudio-server/log:/var/log/rstudio/rstudio-server \
@@ -111,4 +112,3 @@ singularity run \
     --rsession-path="/etc/rstudio/rsession.sh" \
     --auth-none 1 \
     --auth-minimum-user-id 0 \
-    # --bind "$XDG_CACHE_HOME"/.jovyan:/home/jovyan \
