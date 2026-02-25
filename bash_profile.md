@@ -51,5 +51,5 @@ sjob() {
   done
 
   sbatch "$XDG_BIN_HOME/$script" "${passthru[@]}"
-}r
+}
 ```
