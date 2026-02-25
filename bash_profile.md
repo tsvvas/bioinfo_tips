@@ -26,7 +26,30 @@ alias slurm-pd="squeue |  awk ' { if (\$5 == \"PD\") ids[\$4]++ } END { PROCINFO
 
 ## Utilities
 ```
+# CPU-only version
 sjob () {
     sbatch $XDG_BIN_HOME/run_vscode_cpu.sh  "$@"
 }
+# CPU/GPU version
+sjob() {
+  local script="run_vscode_cpu.sh"
+  local passthru=()
+
+  while [[ $# -gt 0 ]]; do
+    case "$1" in
+      -g|--gpu) script="run_vscode_gpu.sh"; shift ;;
+      -c|--cpu) script="run_vscode_cpu.sh"; shift ;;
+      -h|--help)
+        echo "Usage: sjob [-g|--gpu] [-c|--cpu] [script-args...]"
+        echo "  -g/--gpu   use GPU Slurm script"
+        echo "  -c/--cpu   use CPU Slurm script (default)"
+        echo "Any remaining args are passed to the script (e.g., -t, container name)."
+        return 0
+        ;;
+      *) passthru+=("$1"); shift ;;
+    esac
+  done
+
+  sbatch "$XDG_BIN_HOME/$script" "${passthru[@]}"
+}r
 ```
